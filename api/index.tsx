@@ -106,7 +106,6 @@ app.frame('/', (c) => {
     intents: [
       <TextInput placeholder="Search for a name..." />,
       <Button value='search'>Search</Button>,
-      <Button.Reset>Reset</Button.Reset>,
     ],
   })
 })
