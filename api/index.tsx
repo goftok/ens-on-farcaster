@@ -113,7 +113,6 @@ app.frame('/', (c) => {
 
 app.frame('/check', async (c) => {
   const name = c.inputText
-  console.log('name:', name)
 
   const provider = new ethers.InfuraProvider(network, process.env.INFURA_API_KEY);
   const contract = new ethers.Contract(contractAddress, abi, provider);
@@ -185,12 +184,6 @@ app.transaction('/commit/:name', async (c) => {
   const provider = new ethers.InfuraProvider(network, process.env.INFURA_API_KEY);
   const contract = new ethers.Contract(contractAddress, abi, provider);
 
-  console.log('name:', name)
-  console.log('duration:', durationInSec)
-  console.log('address:', address)
-  console.log('Random Secret:', randomSecret);
-
-
   let commitment;
   try {
     commitment = await contract.makeCommitment(name, address, durationInSec, randomSecret, address, [], false, 0);
@@ -199,7 +192,6 @@ app.transaction('/commit/:name', async (c) => {
     throw new Error('Error checking commitment hash');
   }
 
-  console.log('commitment:', commitment);
 
   session[name] = { commitment, randomSecret, durationInSec, address };
 
@@ -221,21 +213,17 @@ app.frame('/wait/:name', (c) => {
     throw new Error('Commitment data not found');
   }
 
-  console.log('register')
-  console.log('name:', name)
-  console.log('address:', commitmentData.address)
-  console.log('commitment:', commitmentData.commitment)
-  console.log('duration:', commitmentData.durationInSec)
-  console.log('Random Secret:', commitmentData.randomSecret);
-
   const text = 'Wait 60 seconds'
   let targetLink = `/register/${name}`
+
+  const link = `${blockscountLink}${c.transactionId}`
 
   return c.res({
     action: '/success',
     image: generateImageComponent(text),
     intents: [
       <Button.Transaction target={targetLink}>Register</ Button.Transaction >,
+      <Button.Link href={link}>See transaction</Button.Link>,
     ],
   })
 })
@@ -262,20 +250,10 @@ app.transaction('/register/:name', async (c) => {
     throw new Error('Error getting rent price');
   }
 
-  console.log('contract', contract.commitments)
-
   const actualRentPrice = BigInt(rentPrice[0]);
 
   const premium = actualRentPrice * slipagge / 100n;
   const value = actualRentPrice + premium;
-
-  console.log('register')
-  console.log('name:', name)
-  console.log('value:', value)
-  console.log('address:', commitmentData.address)
-  console.log('commitment:', commitmentData.commitment)
-  console.log('duration:', durationInSec)
-  console.log('Random Secret:', commitmentData.randomSecret);
 
   return c.contract({
     abi,
