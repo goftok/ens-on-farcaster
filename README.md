@@ -4,7 +4,7 @@ This project provides an ENS (Ethereum Name Service) registration interface buil
 # Installation
 1. Clone the repository
 ```
-git clone git@github.com:goftok/hackathon5.git
+git clone git@github.com:goftok/ens-on-farcaster.git
 ```
 
 2. Install dependencies and run the project
